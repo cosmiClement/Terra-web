@@ -39,5 +39,16 @@ export function getCartCount(lines: CartLine[]) {
 }
 
 export function getCartSubtotal(lines: CartLine[]) {
+  return lines.reduce((total, line) => total + line.originalUnitPrice * line.quantity, 0);
+}
+
+export function getCartSavings(lines: CartLine[]) {
+  return lines.reduce(
+    (total, line) => total + Math.max(0, line.originalUnitPrice - line.unitPrice) * line.quantity,
+    0,
+  );
+}
+
+export function getCartTotal(lines: CartLine[]) {
   return lines.reduce((total, line) => total + line.unitPrice * line.quantity, 0);
 }

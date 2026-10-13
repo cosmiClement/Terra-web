@@ -47,7 +47,7 @@ docs/architecture/           Documentación y decisiones de arquitectura
 
 Los archivos especiales de rutas (`page.tsx`, `layout.tsx`, `loading.tsx`, `error.tsx`, `route.ts`) permanecen en `app/`: Next.js ignora `src/app` si existe una carpeta `app/` en la raíz. Las páginas deben ser delgadas y componer módulos.
 
-El carrito se comparte desde el layout raíz para mantener sus artículos al navegar entre rutas. El catálogo, precios, imágenes y promociones son datos de demostración. El checkout permite revisar, pero no registra pedidos ni procesa pagos; inventario, políticas de invitado, autenticación y modalidades de entrega requieren configuración/integración real. El catálogo ofrece filtros por nombre, modelo y categoría, y orden por precio; no inventa filtros de stock o popularidad.
+El carrito se comparte desde el layout raíz para mantener sus artículos al navegar entre rutas. El catálogo, precios, imágenes y promociones son datos de demostración. El checkout genera un ticket local imprimible de solicitud pendiente con folio temporal, pero no registra ventas ni procesa pagos; el ticket no se conserva después de cerrar o recargar la pantalla. Inventario, políticas de invitado, autenticación y modalidades de entrega requieren configuración/integración real. El catálogo ofrece filtros por nombre, modelo y categoría, y orden por precio; no inventa filtros de stock o popularidad.
 
 ## Límites del código
 

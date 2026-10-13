@@ -12,8 +12,11 @@ export function SpecialOffersSection({ offers, onAddToCart }: SpecialOffersSecti
   return (
     <section className="offers-section" id="promociones" aria-labelledby="offers-title">
       <div className="section-heading offers-heading">
-        <h2 id="offers-title">Ofertas Imperdibles</h2>
-        <span className="expiry-badge">PROMOCIONES</span>
+        <div>
+          <p className="section-kicker">OPORTUNIDADES PARA TU HOGAR</p>
+          <h2 id="offers-title">Promociones destacadas</h2>
+        </div>
+        <span className="expiry-badge">DATOS DEMO</span>
       </div>
 
       <div className="offers-list">

@@ -13,8 +13,11 @@ export function FeaturedProductsSection({ products, categoryLabel, onAddToCart }
   return (
     <section className="featured-section" id="productos" aria-labelledby="featured-title">
       <div className="section-heading">
-        <h2 id="featured-title">Productos Destacados</h2>
-        <Link className="text-link featured-more" href="/catalog">Ver catálogo</Link>
+        <div>
+          <p className="section-kicker">SELECCIÓN TERRA</p>
+          <h2 id="featured-title">Productos destacados</h2>
+        </div>
+        <Link className="text-link featured-more" href="/catalog">Ver catálogo <span aria-hidden="true">→</span></Link>
         {categoryLabel && <p className="catalog-filter-label">Categoría: {categoryLabel}</p>}
       </div>
 

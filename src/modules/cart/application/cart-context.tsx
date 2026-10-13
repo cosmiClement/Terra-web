@@ -4,7 +4,9 @@ import { createContext, useContext, useMemo, useReducer, type ReactNode } from "
 import {
   addCartItem,
   getCartCount,
+  getCartSavings,
   getCartSubtotal,
+  getCartTotal,
   setCartItemQuantity,
 } from "../domain/cart-state";
 import type { CartItemInput, CartLine } from "../domain/cart-item";
@@ -13,6 +15,8 @@ type CartContextValue = {
   items: CartLine[];
   count: number;
   subtotal: number;
+  savings: number;
+  total: number;
   addItem: (item: CartItemInput, quantity?: number) => void;
   removeItem: (itemId: string) => void;
   setQuantity: (itemId: string, quantity: number) => void;
@@ -47,6 +51,8 @@ export function CartProvider({ children }: { children: ReactNode }) {
       items,
       count: getCartCount(items),
       subtotal: getCartSubtotal(items),
+      savings: getCartSavings(items),
+      total: getCartTotal(items),
       addItem: (item, quantity = 1) => dispatch({ type: "add", item, quantity }),
       removeItem: (itemId) => dispatch({ type: "remove", itemId }),
       setQuantity: (itemId, quantity) => dispatch({ type: "set-quantity", itemId, quantity }),

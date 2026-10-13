@@ -14,6 +14,7 @@ import {
 import { StorefrontNavigation } from "@/modules/support";
 import { StoreHeader } from "@/components/layout";
 import { HeroSection } from "./hero-section";
+import { StoreBenefits } from "./store-benefits";
 
 export function HomePage() {
   const [selectedCategory, setSelectedCategory] = useState<CategoryId | null>(null);
@@ -28,6 +29,7 @@ export function HomePage() {
       <StoreHeader />
       <main className="storefront-main">
         <HeroSection />
+        <StoreBenefits />
         <CategorySection
           selectedCategory={selectedCategory}
           onSelectCategory={setSelectedCategory}

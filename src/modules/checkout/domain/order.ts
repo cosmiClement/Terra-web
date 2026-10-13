@@ -4,6 +4,8 @@ import type { Result } from "@/modules/shared";
 export type CheckoutDetails = {
   name: string;
   email: string;
+  address: string;
+  fulfillment: "store-pickup" | "home-delivery";
   guest: boolean;
 };
 
@@ -12,6 +14,12 @@ export type CheckoutReview = {
   items: CartLine[];
   subtotal: number;
   savings: number;
+  total: number;
+};
+
+export type OrderTicket = CheckoutReview & {
+  folio: string;
+  createdAt: string;
 };
 
 export function validateCheckoutDetails(
@@ -33,5 +41,14 @@ export function validateCheckoutDetails(
     return { ok: false, error: "Escribe un correo electrónico válido." };
   }
 
-  return { ok: true, value: { name, email, guest: details.guest } };
+  const address = details.address.trim();
+
+  if (details.fulfillment === "home-delivery" && !address) {
+    return { ok: false, error: "Escribe la dirección solicitada para la entrega a domicilio." };
+  }
+
+  return {
+    ok: true,
+    value: { name, email, address, fulfillment: details.fulfillment, guest: details.guest },
+  };
 }

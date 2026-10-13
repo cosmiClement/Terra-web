@@ -12,7 +12,7 @@ const currency = new Intl.NumberFormat("es-AR", {
 });
 
 export function CartPage() {
-  const { items, subtotal, removeItem, setQuantity } = useCart();
+  const { items, subtotal, savings, total, removeItem, setQuantity } = useCart();
 
   return (
     <>
@@ -61,7 +61,8 @@ export function CartPage() {
           </div>
           <section className="flow-card cart-summary">
             <p>Subtotal <strong>{currency.format(subtotal)}</strong></p>
-            <p>Total provisional <strong>{currency.format(subtotal)}</strong></p>
+            {savings > 0 && <p>Descuentos promocionales <strong>−{currency.format(savings)}</strong></p>}
+            <p>Total provisional <strong>{currency.format(total)}</strong></p>
             <p className="flow-note">El total no incluye envío; las modalidades de retiro o recepción aún no están conectadas.</p>
             <Link className="flow-primary-link" href="/checkout">Continuar al checkout</Link>
           </section>
