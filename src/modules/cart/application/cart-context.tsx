@@ -1,6 +1,6 @@
 "use client";
 
-import { createContext, useContext, useMemo, useReducer, type ReactNode } from "react";
+import { createContext, useContext, useMemo, useReducer, useState, type ReactNode } from "react";
 import {
   addCartItem,
   getCartCount,
@@ -17,10 +17,12 @@ type CartContextValue = {
   subtotal: number;
   savings: number;
   total: number;
+  isPanelOpen: boolean;
   addItem: (item: CartItemInput, quantity?: number) => void;
   removeItem: (itemId: string) => void;
   setQuantity: (itemId: string, quantity: number) => void;
   clearCart: () => void;
+  closeCartPanel: () => void;
 };
 
 type CartAction =
@@ -46,6 +48,7 @@ const CartContext = createContext<CartContextValue | null>(null);
 
 export function CartProvider({ children }: { children: ReactNode }) {
   const [items, dispatch] = useReducer(cartReducer, []);
+  const [isPanelOpen, setIsPanelOpen] = useState(false);
   const value = useMemo<CartContextValue>(
     () => ({
       items,
@@ -53,12 +56,17 @@ export function CartProvider({ children }: { children: ReactNode }) {
       subtotal: getCartSubtotal(items),
       savings: getCartSavings(items),
       total: getCartTotal(items),
-      addItem: (item, quantity = 1) => dispatch({ type: "add", item, quantity }),
+      isPanelOpen,
+      addItem: (item, quantity = 1) => {
+        dispatch({ type: "add", item, quantity });
+        setIsPanelOpen(true);
+      },
       removeItem: (itemId) => dispatch({ type: "remove", itemId }),
       setQuantity: (itemId, quantity) => dispatch({ type: "set-quantity", itemId, quantity }),
       clearCart: () => dispatch({ type: "clear" }),
+      closeCartPanel: () => setIsPanelOpen(false),
     }),
-    [items],
+    [items, isPanelOpen],
   );
 
   return <CartContext.Provider value={value}>{children}</CartContext.Provider>;
