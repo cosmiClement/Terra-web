@@ -137,7 +137,7 @@ export function CartPanel() {
               )}
               <nav aria-label="Acciones del carrito" className="cart-panel-actions">
                 <Link className="cart-panel-view-cart" href="/cart" onClick={closeCartPanel}>Ver carrito</Link>
-                <Link className="cart-panel-checkout" href="/checkout" onClick={closeCartPanel}>Finalizar compra</Link>
+                <Link className="cart-panel-checkout" href="/finalizar-compra" onClick={closeCartPanel}>Finalizar compra</Link>
               </nav>
             </footer>
           </>
