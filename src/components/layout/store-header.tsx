@@ -20,7 +20,13 @@ export function StoreHeader() {
     <header className="store-header store-header--global">
       <Link className="brand-lockup" href="/" aria-label="Terra Autoservicio, inicio">
         <span className="brand-mark">
-          <Image src="/icons/brand.svg" alt="" width={23} height={20} />
+          <Image
+            src="https://terracolchonesymuebles.online/catalogo/logo.jpg"
+            alt="Terra Colchones y Muebles"
+            width={80}
+            height={80}
+            priority
+          />
         </span>
         <span className="brand-copy">
           <strong>COLCHONES Y MUEBLES</strong>
