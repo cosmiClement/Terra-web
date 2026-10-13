@@ -34,7 +34,12 @@ export function StoreHeader() {
         </span>
       </Link>
       <form className="store-search" action="/catalog" role="search">
-        <Image src="/icons/search.svg" alt="" width={18} height={18} />
+        <svg aria-hidden="true" fill="none" height="18" viewBox="0 0 20 20" width="18" xmlns="http://www.w3.org/2000/svg">
+          <path
+            d="M16.25 8.125C16.25 9.91797 15.668 11.5742 14.6875 12.918L19.6328 17.8672C20.1211 18.3555 20.1211 19.1484 19.6328 19.6367C19.1445 20.125 18.3516 20.125 17.8633 19.6367L12.918 14.6875C11.5742 15.6719 9.91797 16.25 8.125 16.25C3.63672 16.25 0 12.6133 0 8.125C0 3.63672 3.63672 0 8.125 0C12.6133 0 16.25 3.63672 16.25 8.125ZM8.125 13.75C11.2314 13.75 13.75 11.2314 13.75 8.125C13.75 5.01855 11.2314 2.5 8.125 2.5C5.01855 2.5 2.5 5.01855 2.5 8.125C2.5 11.2314 5.01855 13.75 8.125 13.75Z"
+            fill="#9CA3AF"
+          />
+        </svg>
         <input aria-label="Buscar productos" name="q" placeholder="Buscar productos" type="search" />
         <button type="submit">Buscar</button>
       </form>
