@@ -1,5 +1,17 @@
 This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
 
+## Estructura de microservicios
+
+La aplicación web actual permanece en `app/`. La estructura inicial para evolucionar hacia microservicios está organizada así:
+
+- `services/api-gateway/`: entrada y enrutamiento de solicitudes.
+- `services/service-template/`: guía base para crear servicios independientes.
+- `packages/contracts/`: contratos compartidos entre servicios.
+- `infrastructure/docker/` y `infrastructure/kubernetes/`: espacios para despliegue.
+- `docs/architecture/`: decisiones y documentación de arquitectura.
+
+Estos directorios son un scaffold documental; los servicios ejecutables, tecnologías y límites de dominio deberán definirse según las necesidades del producto.
+
 ## Getting Started
 
 First, run the development server:
