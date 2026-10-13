@@ -2,10 +2,13 @@
 
 @theme {
   --color-terra-navy: #002855;
-  --color-terra-blue: #0056b3;
+  --color-terra-blue: #dc2626;
   --color-terra-yellow: #ffd700;
   --color-terra-ink: #102a43;
   --color-terra-muted: #64748b;
+  --color-terra-red: #dc2626;
+  --color-terra-red-dark: #b91c1c;
+  --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
 }
 
 @layer base {
@@ -157,7 +160,7 @@
   }
 
   .primary-cta {
-    @apply gap-2 bg-terra-yellow text-terra-navy hover:-translate-y-0.5 hover:bg-yellow-300;
+    @apply gap-2 bg-terra-red text-white hover:-translate-y-0.5 hover:bg-terra-red-dark;
   }
 
   .hero-secondary-cta {
@@ -611,7 +614,7 @@
   }
 
   .cart-panel-checkout {
-    @apply bg-terra-blue text-white hover:bg-terra-navy;
+    @apply bg-terra-red text-white hover:bg-terra-red-dark;
   }
 
   .cart-panel-empty {
@@ -852,7 +855,7 @@
   }
 
   .touch-action {
-    @apply border-terra-yellow bg-terra-yellow text-terra-navy hover:bg-yellow-300;
+    @apply border-terra-red bg-terra-red text-white hover:bg-terra-red-dark;
   }
 
   .catalog-no-results {

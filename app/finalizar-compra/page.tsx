@@ -4,21 +4,28 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
-
-
+import { useCart } from "@/modules/cart/application/cart-context";
 
 const tiposDocumento = ["CI", "NIT", "Pasaporte"];
 
-export default function FinalizarCompraPage() {
+const currency = new Intl.NumberFormat("es-BO", {
+  style: "currency",
+  currency: "BOB",
+  maximumFractionDigits: 0,
+});
+const inputClass =
+  "w-full border border-slate-300 rounded-lg px-4 py-3 text-sm text-terra-ink placeholder-slate-400 bg-white outline-none focus:border-terra-red focus:ring-2 focus:ring-red-100 transition";
 
+export default function FinalizarCompraPage() {
   const [tipoDoc, setTipoDoc] = useState("CI");
   const router = useRouter();
-
+  const { items, total } = useCart();
 
   return (
-    <div className="min-h-screen bg-gray-50 font-sans">
-      {/* Header bar */}
-      <header className="bg-white border-b border-gray-200 px-6 py-4">
+    <div className="min-h-screen bg-slate-50">
+
+      {/* ── Header ── */}
+      <header className="bg-white border-b border-slate-200 px-6 py-4 shadow-sm">
         <div className="max-w-6xl mx-auto">
           <Image
             src="https://terracolchonesymuebles.online/catalogo/logo.jpg"
@@ -34,47 +41,30 @@ export default function FinalizarCompraPage() {
       <main className="max-w-6xl mx-auto px-4 py-8">
         <div className="flex flex-col lg:flex-row gap-8 items-start">
 
-          {/* ─── LEFT COLUMN: Mis datos ─────────────────────────────────────── */}
+          {/* ── Columna izquierda: Mis datos ── */}
           <div className="flex-1 min-w-0">
-            {/* Title + back link */}
+
             <div className="flex items-center justify-between mb-6">
-              <h1 className="text-2xl font-semibold text-gray-800">Mis datos</h1>
+              <h1 className="text-2xl font-black tracking-tight text-terra-navy">
+                Mis datos
+              </h1>
               <Link
                 href="/carrito"
-                className="text-sm text-blue-600 hover:text-blue-800 flex items-center gap-1 transition-colors"
+                className="text-sm font-bold text-terra-red hover:text-terra-red-dark flex items-center gap-1 transition-colors"
               >
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  className="h-4 w-4"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                  strokeWidth={2}
-                >
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                   <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />
                 </svg>
                 Volver al carrito
               </Link>
             </div>
 
-            {/* Form */}
             <form className="space-y-4" onSubmit={(e) => e.preventDefault()}>
+
               {/* Nombre + Apellido */}
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <input
-                  id="nombre"
-                  type="text"
-                  placeholder="Nombre(s) *"
-                  required
-                  className="w-full border border-gray-300 rounded-md px-4 py-3 text-sm text-gray-700 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-transparent transition"
-                />
-                <input
-                  id="apellido"
-                  type="text"
-                  placeholder="Apellido(s) *"
-                  required
-                  className="w-full border border-gray-300 rounded-md px-4 py-3 text-sm text-gray-700 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-transparent transition"
-                />
+                <input id="nombre" type="text" placeholder="Nombre(s) *" required className={inputClass} />
+                <input id="apellido" type="text" placeholder="Apellido(s) *" required className={inputClass} />
               </div>
 
               {/* Teléfono */}
@@ -84,28 +74,18 @@ export default function FinalizarCompraPage() {
                 placeholder="Teléfono (sólo números) *"
                 required
                 pattern="[0-9]+"
-                className="w-full border border-gray-300 rounded-md px-4 py-3 text-sm text-gray-700 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-transparent transition"
+                className={inputClass}
               />
 
               {/* Correo + NIT */}
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <input
-                  id="correo"
-                  type="email"
-                  placeholder="Correo (opcional)"
-                  className="w-full border border-gray-300 rounded-md px-4 py-3 text-sm text-gray-700 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-transparent transition"
-                />
-                <input
-                  id="nit"
-                  type="text"
-                  placeholder="Número de CI, NIT y razón social (opcional)"
-                  className="w-full border border-gray-300 rounded-md px-4 py-3 text-sm text-gray-700 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-transparent transition"
-                />
+                <input id="correo" type="email" placeholder="Correo (opcional)" className={inputClass} />
+                <input id="nit" type="text" placeholder="Número de CI, NIT y razón social (opcional)" className={inputClass} />
               </div>
 
               {/* Tipo de documento */}
-              <div className="relative">
-                <label className="block text-xs text-gray-500 mb-1 ml-1">
+              <div>
+                <label className="block text-xs font-bold text-slate-500 mb-1 ml-0.5">
                   Tipo de documento (opcional)
                 </label>
                 <div className="relative">
@@ -113,69 +93,64 @@ export default function FinalizarCompraPage() {
                     id="tipo-documento"
                     value={tipoDoc}
                     onChange={(e) => setTipoDoc(e.target.value)}
-                    className="w-full border border-gray-300 rounded-md px-4 py-3 text-sm text-gray-700 appearance-none focus:outline-none focus:ring-2 focus:ring-blue-400 focus:border-transparent transition bg-white"
+                    className={`${inputClass} appearance-none`}
                   >
                     {tiposDocumento.map((t) => (
-                      <option key={t} value={t}>
-                        {t}
-                      </option>
+                      <option key={t} value={t}>{t}</option>
                     ))}
                   </select>
                   <div className="pointer-events-none absolute inset-y-0 right-3 flex items-center">
-                    <svg className="h-4 w-4 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <svg className="h-4 w-4 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
                     </svg>
                   </div>
                 </div>
               </div>
 
-
             </form>
           </div>
 
-          {/* ─── RIGHT COLUMN: Envío + Pago ─────────────────────────────────── */}
+          {/* ── Columna derecha: Resumen ── */}
           <div className="w-full lg:w-80 xl:w-96 shrink-0">
-            <div className="bg-white border border-gray-200 rounded-lg p-6 space-y-5">
+            <div className="bg-white border border-slate-200 rounded-2xl p-6 shadow-sm space-y-5">
 
-              {/* ENVÍO */}
+              {/* Envío */}
               <div>
-                <h2 className="text-sm font-bold uppercase tracking-widest text-gray-700 mb-3">
+                <h2 className="text-xs font-extrabold uppercase tracking-widest text-terra-navy mb-3">
                   Envío
                 </h2>
-                <p className="text-sm text-gray-600 leading-relaxed">
-                  <span className="font-medium text-gray-800">Recogida local</span>{" "}
-                  |{" "}
-                  <span className="text-blue-600">
+                <p className="text-sm text-terra-ink leading-relaxed">
+                  <span className="font-bold">Recogida local</span>{" "}|{" "}
+                  <span className="text-terra-red">
                     Realiza tu compra online y recógelo en tu tienda más cercana.
                   </span>{" "}
                   Entraremos en contacto para coordinar tu visita.{" "}
-                  <span className="text-blue-600">
+                  <span className="text-terra-red">
                     El monto mínimo para acceder al envío gratuito es de Bs. 1000.
                   </span>
                 </p>
               </div>
 
-              <hr className="border-gray-200" />
+              <hr className="border-slate-200" />
 
-              {/* TOTAL */}
+              {/* Total */}
               <div className="flex items-center justify-between">
-                <span className="text-sm font-bold uppercase tracking-widest text-gray-700">
+                <span className="text-xs font-extrabold uppercase tracking-widest text-terra-navy">
                   Total
                 </span>
-                <span className="text-base font-bold text-gray-900">Bs. 990</span>
+                <span className="text-base font-black text-terra-navy">{currency.format(total)}</span>
               </div>
 
-
-
-              {/* BOTÓN REALIZAR PEDIDO */}
+              {/* Botón */}
               <button
                 id="btn-realizar-pedido"
                 type="button"
                 onClick={() => router.push("/pedido-confirmado")}
-                className="w-full bg-blue-800 hover:bg-blue-900 active:scale-[0.98] text-white font-semibold py-3 rounded-md text-sm tracking-wide transition-all duration-150"
+                className="w-full bg-terra-red hover:bg-terra-red-dark active:scale-[0.98] text-white font-extrabold py-3.5 rounded-xl text-sm tracking-wide transition-all duration-150 shadow-sm shadow-red-200"
               >
                 Realizar el pedido
               </button>
+
             </div>
           </div>
         </div>
