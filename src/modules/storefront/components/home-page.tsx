@@ -8,7 +8,6 @@ import {
   FeaturedProductsSection,
   filterCatalog,
   isPromotion,
-  SpecialOffersSection,
   type CategoryId,
 } from "@/modules/catalog";
 import { StorefrontNavigation } from "@/modules/support";
@@ -18,11 +17,17 @@ import { StoreBenefits } from "./store-benefits";
 
 export function HomePage() {
   const [selectedCategory, setSelectedCategory] = useState<CategoryId | null>(null);
+  const [addedMessage, setAddedMessage] = useState("");
   const { addItem } = useCart();
   const categoryLabel = categories.find((category) => category.id === selectedCategory)?.label ?? null;
   const filteredItems = filterCatalog(selectedCategory);
   const products = filteredItems.filter((item) => !isPromotion(item));
-  const promotions = filteredItems.filter(isPromotion);
+
+  function handleAdd(item: Parameters<typeof addItem>[0]) {
+    addItem(item);
+    setAddedMessage(`${item.name} se agregó al carrito`);
+    window.setTimeout(() => setAddedMessage(""), 2800);
+  }
 
   return (
     <div className="storefront" id="inicio">
@@ -39,12 +44,16 @@ export function HomePage() {
           <FeaturedProductsSection
             products={products}
             categoryLabel={categoryLabel}
-            onAddToCart={addItem}
+            onAddToCart={handleAdd}
           />
-          <SpecialOffersSection offers={promotions} onAddToCart={addItem} />
         </div>
       </main>
       <StorefrontNavigation />
+      {addedMessage && (
+        <p className="fixed bottom-20 left-1/2 z-30 -translate-x-1/2 rounded-full bg-terra-navy px-5 py-3 text-center text-sm font-bold text-white shadow-xl" role="status">
+          {addedMessage}
+        </p>
+      )}
     </div>
   );
 }

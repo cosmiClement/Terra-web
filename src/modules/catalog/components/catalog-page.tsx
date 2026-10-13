@@ -56,7 +56,7 @@ export function CatalogPage({ initialQuery = "", initialCategory = "" }: Catalog
 
         <label className="catalog-search-control">
           <span>Buscar por nombre o modelo</span>
-          <input value={query} onChange={(event) => setQuery(event.target.value)} placeholder="Ej. colchón, TER-MAT-001" />
+          <input value={query} onChange={(event) => setQuery(event.target.value)} placeholder="Ej. colchón, DEMO-MAT-01" />
         </label>
 
         <nav className="catalog-category-filter" aria-label="Filtrar por categoría">

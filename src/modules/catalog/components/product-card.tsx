@@ -12,7 +12,7 @@ export function ProductCard({ item, onAdd }: ProductCardProps) {
   const promotion = isPromotion(item) ? item : null;
 
   return (
-    <article className="catalog-product-card">
+    <article className="group catalog-product-card">
       <Link className="catalog-product-image" href={`/products/${item.id}`} aria-label={`Ver ${item.name}`}>
         <Image src={item.image} alt={item.name} fill sizes="(max-width: 640px) 90vw, (max-width: 1024px) 45vw, 25vw" />
         {promotion && <span className="catalog-discount-badge">{promotion.badge}</span>}

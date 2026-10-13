@@ -3,9 +3,8 @@ import { StoreIcon, type StoreIconName } from "@/components/ui/store-icon";
 
 const navigation: { label: string; href: string; icon: StoreIconName }[] = [
   { label: "Inicio", href: "#inicio", icon: "home" },
-  { label: "Categorías", href: "#categorias", icon: "search" },
-  { label: "Productos", href: "#productos", icon: "cart" },
-  { label: "Promociones", href: "#promociones", icon: "star" },
+  { label: "Catálogo", href: "/catalog", icon: "search" },
+  { label: "Carrito", href: "/cart", icon: "cart" },
   { label: "Cuenta", href: "/account", icon: "user" },
 ];
 

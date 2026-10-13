@@ -38,7 +38,9 @@ export function CategorySection({ selectedCategory, onSelectCategory, onShowAll 
             <span className="category-image-wrap">
               <Image src={category.image} alt="" fill sizes="(max-width: 700px) 38vw, 160px" />
             </span>
+            <span className="category-icon" aria-hidden="true"><StoreIcon name="home" /></span>
             <span className="category-name">{category.label}</span>
+            <span className="category-link">Ver productos <span aria-hidden="true">→</span></span>
           </button>
         ))}
       </div>

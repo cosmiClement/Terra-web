@@ -8,13 +8,13 @@ import { storefrontPolicy } from "@/config/storefront";
 import { createOrderTicket, prepareCheckout } from "../application/prepare-checkout";
 import type { CheckoutReview, OrderTicket } from "../domain/order";
 
-const currency = new Intl.NumberFormat("es-AR", {
+const currency = new Intl.NumberFormat("es-BO", {
   style: "currency",
-  currency: "ARS",
+  currency: "BOB",
   maximumFractionDigits: 0,
 });
 
-const dateTime = new Intl.DateTimeFormat("es-AR", {
+const dateTime = new Intl.DateTimeFormat("es-BO", {
   dateStyle: "medium",
   timeStyle: "short",
 });

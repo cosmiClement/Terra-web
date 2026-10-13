@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { useEffect, useState, type TouchEvent } from "react";
 import { promotions } from "@/modules/catalog";
 import { StoreIcon } from "@/components/ui/store-icon";
 
@@ -20,7 +20,7 @@ const slides = [
   ...promotions.map((promotion) => ({
     id: promotion.id,
     image: promotion.image,
-    eyebrow: `PROMOCIÓN · ${promotion.badge}`,
+    eyebrow: <><strong>PROMOCIÓN</strong> <span>{promotion.badge}</span></>,
     title: <>{promotion.name} <span>a un precio especial</span></>,
     description: promotion.description,
     action: "Ver promoción",
@@ -30,8 +30,9 @@ const slides = [
 ];
 
 export function HeroSection() {
-  const [activeIndex, setActiveIndex] = useState(0);
+  const [activeIndex, setActiveIndex] = useState(1);
   const [isPaused, setIsPaused] = useState(false);
+  const [touchStart, setTouchStart] = useState<number | null>(null);
   const activeSlide = slides[activeIndex];
 
   useEffect(() => {
@@ -48,14 +49,33 @@ export function HeroSection() {
     setActiveIndex((index + slides.length) % slides.length);
   }
 
+  function handleTouchStart(event: TouchEvent<HTMLElement>) {
+    setIsPaused(true);
+    setTouchStart(event.touches[0]?.clientX ?? null);
+  }
+
+  function handleTouchEnd(event: TouchEvent<HTMLElement>) {
+    if (touchStart === null) return;
+    const distance = (event.changedTouches[0]?.clientX ?? touchStart) - touchStart;
+
+    if (Math.abs(distance) > 45) {
+      changeSlide(activeIndex + (distance < 0 ? 1 : -1));
+    }
+
+    setTouchStart(null);
+  }
+
   return (
     <section
       aria-labelledby="hero-title"
       className="hero-section"
+      id="promociones"
       onMouseEnter={() => setIsPaused(true)}
       onMouseLeave={() => setIsPaused(false)}
       onFocus={() => setIsPaused(true)}
       onBlur={() => setIsPaused(false)}
+      onTouchEnd={handleTouchEnd}
+      onTouchStart={handleTouchStart}
     >
       {slides.map((slide, index) => (
         <Image
@@ -77,7 +97,9 @@ export function HeroSection() {
             {activeSlide.action}
             <StoreIcon name="arrow-right" />
           </Link>
-          <Link className="hero-secondary-cta" href="#promociones">Ver promociones</Link>
+          <button className="hero-secondary-cta" onClick={() => changeSlide(1)} type="button">
+            Ver promociones
+          </button>
         </div>
         <span className="hero-note">{activeSlide.note}</span>
       </div>

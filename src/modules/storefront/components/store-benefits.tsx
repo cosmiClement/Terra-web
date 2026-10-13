@@ -2,8 +2,9 @@ import { StoreIcon } from "@/components/ui/store-icon";
 
 const benefits = [
   { icon: "support" as const, title: "Te asesoramos", text: "Consulta antes de elegir" },
-  { icon: "home" as const, title: "Retiro en tienda", text: "Coordina con el equipo" },
-  { icon: "star" as const, title: "Promociones activas", text: "Precios de demostración" },
+  { icon: "home" as const, title: "Retiro o entrega", text: "Modalidad sujeta a confirmación" },
+  { icon: "star" as const, title: "Ofertas destacadas", text: "Consulta condiciones en tienda" },
+  { icon: "heart" as const, title: "Compra segura", text: "Protección en cada transacción" },
 ];
 
 export function StoreBenefits() {

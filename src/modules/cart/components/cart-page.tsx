@@ -5,9 +5,9 @@ import Image from "next/image";
 import { useCart } from "../application/cart-context";
 import { StoreHeader } from "@/components/layout";
 
-const currency = new Intl.NumberFormat("es-AR", {
+const currency = new Intl.NumberFormat("es-BO", {
   style: "currency",
-  currency: "ARS",
+  currency: "BOB",
   maximumFractionDigits: 0,
 });
 
