@@ -1,16 +1,18 @@
 import Image from "next/image";
 import Link from "next/link";
 import type { CategoryId } from "@/modules/catalog/domain/catalog-data";
-import { categories } from "@/modules/catalog/domain/catalog-data";
 import { StoreIcon } from "@/components/ui/store-icon";
+
+type Category = { id: CategoryId; label: string; image: string };
 
 type CategorySectionProps = {
   selectedCategory: CategoryId | null;
+  categories: Category[];
   onSelectCategory: (category: CategoryId) => void;
   onShowAll: () => void;
 };
 
-export function CategorySection({ selectedCategory, onSelectCategory, onShowAll }: CategorySectionProps) {
+export function CategorySection({ categories, selectedCategory, onSelectCategory, onShowAll }: CategorySectionProps) {
   return (
     <section className="content-section category-section" id="categorias" aria-labelledby="categories-title">
       <div className="section-heading">
@@ -36,7 +38,7 @@ export function CategorySection({ selectedCategory, onSelectCategory, onShowAll 
             type="button"
           >
             <span className="category-image-wrap">
-              <Image src={category.image} alt="" fill sizes="(max-width: 700px) 38vw, 160px" />
+              <Image src={category.image} alt="" fill unoptimized sizes="(max-width: 700px) 38vw, 160px" />
             </span>
             <span className="category-icon" aria-hidden="true"><StoreIcon name="home" /></span>
             <span className="category-name">{category.label}</span>

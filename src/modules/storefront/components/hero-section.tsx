@@ -3,7 +3,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useState, type TouchEvent } from "react";
-import { promotions } from "@/modules/catalog";
+import type { Promotion } from "@/modules/catalog";
 import { StoreIcon } from "@/components/ui/store-icon";
 
 const slides = [
@@ -17,7 +17,12 @@ const slides = [
     href: "/catalog",
     note: "Datos de demostración · Confirma disponibilidad en tienda",
   },
-  ...promotions.map((promotion) => ({
+];
+
+function createSlides(promotions: Promotion[]) {
+  return [
+    slides[0],
+    ...promotions.map((promotion) => ({
     id: promotion.id,
     image: promotion.image,
     eyebrow: <><strong>PROMOCIÓN</strong> <span>{promotion.badge}</span></>,
@@ -26,24 +31,27 @@ const slides = [
     action: "Ver promoción",
     href: `/products/${promotion.id}`,
     note: "Promoción de demostración · Consulta condiciones en tienda",
-  })),
-];
+    })),
+  ];
+}
 
-export function HeroSection() {
-  const [activeIndex, setActiveIndex] = useState(1);
+export function HeroSection({ promotions }: { promotions: Promotion[] }) {
+  const slides = createSlides(promotions);
+  const slideCount = slides.length;
+  const [activeIndex, setActiveIndex] = useState(0);
   const [isPaused, setIsPaused] = useState(false);
   const [touchStart, setTouchStart] = useState<number | null>(null);
-  const activeSlide = slides[activeIndex];
+  const activeSlide = slides[Math.min(activeIndex, slideCount - 1)] ?? slides[0];
 
   useEffect(() => {
     if (isPaused) return;
 
     const timer = window.setInterval(() => {
-      setActiveIndex((currentIndex) => (currentIndex + 1) % slides.length);
+      setActiveIndex((currentIndex) => (currentIndex + 1) % slideCount);
     }, 6500);
 
     return () => window.clearInterval(timer);
-  }, [isPaused]);
+  }, [isPaused, slideCount]);
 
   function changeSlide(index: number) {
     setActiveIndex((index + slides.length) % slides.length);

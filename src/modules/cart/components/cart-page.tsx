@@ -12,7 +12,7 @@ const currency = new Intl.NumberFormat("es-BO", {
 });
 
 export function CartPage() {
-  const { items, subtotal, savings, total, removeItem, setQuantity } = useCart();
+  const { items, subtotal, savings, total, removeItem, setQuantity, isSyncing, syncError } = useCart();
 
   return (
     <>
@@ -20,7 +20,9 @@ export function CartPage() {
       <main className="flow-page">
       <Link className="flow-back-link" href="/">← Volver a la tienda</Link>
       <h1>Mi carrito</h1>
-      {items.length === 0 ? (
+      {isSyncing && <p className="flow-note" role="status">Sincronizando carrito…</p>}
+      {syncError && <p className="flow-error" role="alert">No se guardaron los cambios en el servidor: {syncError}</p>}
+      {items.length === 0 && isSyncing ? null : items.length === 0 ? (
         <section className="flow-card">
           <p>Tu carrito está vacío.</p>
           <Link className="flow-primary-link" href="/#productos">Explorar productos</Link>
@@ -34,6 +36,7 @@ export function CartPage() {
                   <Image className="cart-line-image" src={item.image} alt={item.name} width={100} height={86} />
                   <h2>{item.name}</h2>
                   {item.reference && <p className="catalog-reference">Modelo {item.reference}</p>}
+                  {item.variantName && <p className="catalog-reference">Variante: {item.variantName}</p>}
                   <p>{currency.format(item.unitPrice)} por unidad</p>
                   {item.originalUnitPrice > item.unitPrice && (
                     <p className="cart-savings">Ahorro ilustrativo: {currency.format((item.originalUnitPrice - item.unitPrice) * item.quantity)}</p>
@@ -64,7 +67,11 @@ export function CartPage() {
             {savings > 0 && <p>Descuentos promocionales <strong>−{currency.format(savings)}</strong></p>}
             <p>Total provisional <strong>{currency.format(total)}</strong></p>
             <p className="flow-note">El total no incluye envío; las modalidades de retiro o recepción aún no están conectadas.</p>
-            <Link className="flow-primary-link" href="/checkout">Continuar al checkout</Link>
+            {syncError || isSyncing ? (
+              <button className="flow-primary-button" disabled type="button">Sincroniza el carrito para continuar</button>
+            ) : (
+              <Link className="flow-primary-link" href="/checkout">Continuar al checkout</Link>
+            )}
           </section>
         </>
       )}

@@ -3,8 +3,9 @@
 import { useMemo, useState } from "react";
 import { useCart } from "@/modules/cart";
 import { StoreHeader } from "@/components/layout";
-import { categories, type CategoryId } from "../domain/catalog-data";
+import type { CategoryId } from "../domain/catalog-data";
 import { filterCatalog } from "../application/filter-catalog";
+import { useCatalogData } from "../application/use-catalog-data";
 import { ProductCard } from "./product-card";
 
 type CatalogPageProps = {
@@ -13,26 +14,37 @@ type CatalogPageProps = {
 };
 
 export function CatalogPage({ initialQuery = "", initialCategory = "" }: CatalogPageProps) {
+  const { categories, items, isLoading, error, usingApi } = useCatalogData();
   const categoryExists = categories.some((category) => category.id === initialCategory);
   const [category, setCategory] = useState<CategoryId | null>(categoryExists ? initialCategory as CategoryId : null);
   const [query, setQuery] = useState(initialQuery);
   const [sort, setSort] = useState("relevance");
+  const [actionMessage, setActionMessage] = useState("");
   const { addItem } = useCart();
 
+  async function handleAdd(item: Parameters<typeof addItem>[0]) {
+    try {
+      await addItem(item);
+      setActionMessage(`${item.name} se agregó al carrito.`);
+    } catch (reason) {
+      setActionMessage(reason instanceof Error ? reason.message : "No se pudo sincronizar el carrito.");
+    }
+  }
+
   const results = useMemo(() => {
-    const items = filterCatalog(category, query);
+    const results = filterCatalog(category, query, items);
 
     if (sort === "price-asc" || sort === "price-desc") {
       const direction = sort === "price-asc" ? 1 : -1;
-      return [...items].sort((first, second) => {
+      return [...results].sort((first, second) => {
         const firstPrice = Number(first.price.replace(/[^\d]/g, ""));
         const secondPrice = Number(second.price.replace(/[^\d]/g, ""));
         return (firstPrice - secondPrice) * direction;
       });
     }
 
-    return items;
-  }, [category, query, sort]);
+    return results;
+  }, [category, items, query, sort]);
 
   return (
     <>
@@ -54,10 +66,14 @@ export function CatalogPage({ initialQuery = "", initialCategory = "" }: Catalog
           </label>
         </div>
 
-        <label className="catalog-search-control">
+          <label className="catalog-search-control">
           <span>Buscar por nombre o modelo</span>
           <input value={query} onChange={(event) => setQuery(event.target.value)} placeholder="Ej. colchón, DEMO-MAT-01" />
-        </label>
+          </label>
+
+        {isLoading && <p className="flow-note" role="status">Cargando catálogo desde la API…</p>}
+        {error && <p className="flow-error" role="alert">No se pudo cargar el catálogo desde el backend: {error}</p>}
+        {!usingApi && <p className="flow-note">Modo demostración: configura las variables de Supabase para conectar el catálogo.</p>}
 
         <nav className="catalog-category-filter" aria-label="Filtrar por categoría">
           <button aria-pressed={category === null} className={category === null ? "is-selected" : ""} onClick={() => setCategory(null)} type="button">
@@ -80,9 +96,12 @@ export function CatalogPage({ initialQuery = "", initialCategory = "" }: Catalog
           <h2>Productos y promociones</h2>
           <span>{results.length} resultados</span>
         </div>
-        {results.length > 0 ? (
+        {actionMessage && <p className={actionMessage.includes("agregó") ? "flow-success" : "flow-error"} role="status">{actionMessage}</p>}
+        {isLoading ? (
+          <p className="flow-note" role="status">Cargando productos…</p>
+        ) : error && results.length === 0 ? null : results.length > 0 ? (
           <div className="catalog-product-grid">
-            {results.map((item) => <ProductCard item={item} key={item.id} onAdd={addItem} />)}
+            {results.map((item) => <ProductCard item={item} key={item.id} onAdd={handleAdd} />)}
           </div>
         ) : (
           <section className="catalog-no-results">

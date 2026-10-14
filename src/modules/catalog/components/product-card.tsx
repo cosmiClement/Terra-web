@@ -5,7 +5,7 @@ import { isPromotion } from "../domain/catalog-data";
 
 type ProductCardProps = {
   item: CatalogItem;
-  onAdd: (item: CatalogItem) => void;
+  onAdd: (item: CatalogItem) => void | Promise<void>;
 };
 
 export function ProductCard({ item, onAdd }: ProductCardProps) {
@@ -14,7 +14,7 @@ export function ProductCard({ item, onAdd }: ProductCardProps) {
   return (
     <article className="group catalog-product-card">
       <Link className="catalog-product-image" href={`/products/${item.id}`} aria-label={`Ver ${item.name}`}>
-        <Image src={item.image} alt={item.name} fill sizes="(max-width: 640px) 90vw, (max-width: 1024px) 45vw, 25vw" />
+        <Image src={item.image} alt={item.name} fill unoptimized sizes="(max-width: 640px) 90vw, (max-width: 1024px) 45vw, 25vw" />
         {promotion && <span className="catalog-discount-badge">{promotion.badge}</span>}
       </Link>
       <div className="catalog-product-info">
@@ -26,7 +26,7 @@ export function ProductCard({ item, onAdd }: ProductCardProps) {
         </p>
         <div className="catalog-card-actions">
           <Link className="secondary-action" href={`/products/${item.id}`}>Ver producto</Link>
-          <button className="touch-action" type="button" onClick={() => onAdd(item)}>
+          <button className="touch-action" type="button" onClick={() => void onAdd(item)}>
             Agregar
           </button>
         </div>

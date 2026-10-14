@@ -6,7 +6,7 @@ export const categories = [
   { id: "accessories", label: "Accesorios", image: "/images/category-bedding.png" },
 ] as const;
 
-export type CategoryId = (typeof categories)[number]["id"];
+export type CategoryId = string;
 
 export type Product = {
   id: string;
@@ -16,6 +16,9 @@ export type Product = {
   price: string;
   category: CategoryId;
   description: string;
+  variantId?: string;
+  variantName?: string;
+  variants?: { id?: string; name: string; value: string; price: string }[];
 };
 
 export const featuredProducts: Product[] = [

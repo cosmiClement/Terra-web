@@ -5,6 +5,8 @@ export type CartItemInput = {
   price: string;
   oldPrice?: string;
   reference?: string;
+  variantId?: string;
+  variantName?: string;
 };
 
 export type CartLine = {
@@ -15,6 +17,8 @@ export type CartLine = {
   unitPrice: number;
   originalUnitPrice: number;
   quantity: number;
+  variantId?: string;
+  variantName?: string;
 };
 
 export function parsePrice(price: string) {

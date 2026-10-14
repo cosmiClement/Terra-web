@@ -2,12 +2,13 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useCart } from "@/modules/cart";
 import { StoreHeader } from "@/components/layout";
 import { StoreIcon } from "@/components/ui/store-icon";
 import type { CatalogItem } from "../domain/catalog-data";
 import { isPromotion } from "../domain/catalog-data";
+import { isApiConfigured, listInventory } from "@/lib/api/catalog-api";
 
 const demoVariants = [
   { name: "Estándar", value: "50 × 70 cm" },
@@ -19,12 +20,46 @@ export function ProductDetailPage({ item }: { item: CatalogItem }) {
   const [quantity, setQuantity] = useState(1);
   const [selectedVariant, setSelectedVariant] = useState(0);
   const [added, setAdded] = useState(false);
+  const [cartError, setCartError] = useState("");
+  const [availability, setAvailability] = useState("Disponibilidad: consultar en tienda");
   const { addItem } = useCart();
   const promotion = isPromotion(item) ? item : null;
+  const variants = item.variants?.length ? item.variants : demoVariants.map((variant) => ({ ...variant, id: item.variantId, price: item.price }));
+  const activeVariant = variants[Math.min(selectedVariant, variants.length - 1)];
 
-  function handleAdd() {
-    addItem(item, quantity);
-    setAdded(true);
+  useEffect(() => {
+    if (!isApiConfigured || !activeVariant?.id) return;
+
+    let active = true;
+    listInventory({ product_variant_id: activeVariant.id })
+      .then((records) => {
+        if (!active) return;
+        const available = records.reduce((total, record) => total + Math.max(0, record.quantity_available - record.quantity_reserved), 0);
+        setAvailability(available > 0 ? `Disponibilidad: ${available} unidades en tiendas` : "Disponibilidad: consultar en tienda");
+      })
+      .catch(() => {
+        if (active) setAvailability("Disponibilidad: consultar en tienda");
+      });
+
+    return () => {
+      active = false;
+    };
+  }, [activeVariant?.id]);
+
+  async function handleAdd() {
+    setCartError("");
+    setAdded(false);
+    try {
+      await addItem({
+      ...item,
+      variantId: activeVariant?.id ?? item.variantId,
+      variantName: activeVariant?.name ?? item.variantName,
+      price: promotion ? item.price : activeVariant?.price ?? item.price,
+      }, quantity);
+      setAdded(true);
+    } catch (reason) {
+      setCartError(reason instanceof Error ? reason.message : "No se pudo sincronizar el carrito.");
+    }
   }
 
   return (
@@ -39,13 +74,13 @@ export function ProductDetailPage({ item }: { item: CatalogItem }) {
         <div className="product-detail-layout">
           <section className="detail-gallery" aria-label="Galería del producto">
             <div className="product-detail-image w-full">
-              <Image src={item.image} alt={item.name} fill sizes="(max-width: 900px) 100vw, 55vw" priority />
+              <Image src={item.image} alt={item.name} fill unoptimized sizes="(max-width: 900px) 100vw, 55vw" priority />
               {promotion && <span className="catalog-discount-badge">{promotion.badge}</span>}
               <span className="detail-demo-mark">Vista de demostración</span>
             </div>
             <div className="detail-thumbnails">
               <button aria-label="Vista principal del producto" className="detail-thumbnail is-selected" type="button">
-                <Image src={item.image} alt="" fill sizes="96px" />
+                <Image src={item.image} alt="" fill unoptimized sizes="96px" />
               </button>
               <span className="detail-more-photos">+<small>Más vistas<br />próximamente</small></span>
             </div>
@@ -68,7 +103,7 @@ export function ProductDetailPage({ item }: { item: CatalogItem }) {
               <span>Valoración demo</span>
             </div>
             <p className="detail-price">
-              <strong>{item.price}</strong>
+              <strong>{promotion ? item.price : activeVariant?.price ?? item.price}</strong>
               {promotion && <del>{promotion.oldPrice}</del>}
               {promotion && <span className="detail-discount">{promotion.badge}</span>}
             </p>
@@ -77,7 +112,7 @@ export function ProductDetailPage({ item }: { item: CatalogItem }) {
             <fieldset className="detail-variants">
               <legend>Medidas y variantes <span>(demostración)</span></legend>
               <div className="detail-variant-grid">
-                {demoVariants.map((variant, index) => (
+                {variants.map((variant, index) => (
                   <button
                     aria-pressed={selectedVariant === index}
                     className={selectedVariant === index ? "is-selected" : ""}
@@ -94,7 +129,7 @@ export function ProductDetailPage({ item }: { item: CatalogItem }) {
 
             <div className="detail-availability">
               <StoreIcon name="support" />
-              <span><strong>Disponibilidad:</strong> consultar en tienda</span>
+              <span>{availability}</span>
             </div>
 
             <div className="detail-purchase-row">
@@ -114,7 +149,8 @@ export function ProductDetailPage({ item }: { item: CatalogItem }) {
               </button>
               <Link className="secondary-action detail-cart-link" href="/cart">Ver carrito</Link>
             </div>
-            {added && <p className="flow-success" role="status">Producto agregado. Puedes seguir explorando o revisar tu carrito.</p>}
+            {added && <p className="flow-success" role="status">Producto agregado y guardado en el carrito.</p>}
+            {cartError && <p className="flow-error" role="alert">{cartError}</p>}
           </section>
         </div>
         <p className="catalog-disclaimer">Las imágenes, precios, variantes y promociones son datos de demostración. Confirma la información vigente con el personal de tienda.</p>

@@ -25,7 +25,7 @@ export function FeaturedProductsSection({ products, categoryLabel, onAddToCart }
         {products.map((product, index) => (
           <article className="featured-card" key={product.id}>
             <div className="featured-image-wrap">
-              <Image src={product.image} alt={product.name} fill sizes="(max-width: 700px) 36vw, 100px" />
+              <Image src={product.image} alt={product.name} fill unoptimized sizes="(max-width: 700px) 36vw, 100px" />
               <span className={`featured-badge${index === 0 ? " featured-badge--blue" : ""}`}>{index === 0 ? "Más vendido" : "Nuevo"}</span>
             </div>
             <div className="featured-details">

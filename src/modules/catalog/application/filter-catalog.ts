@@ -1,9 +1,9 @@
-import { catalogItems, type CategoryId } from "../domain/catalog-data";
+import { catalogItems, type CatalogItem, type CategoryId } from "../domain/catalog-data";
 
-export function filterCatalog(category: CategoryId | null, query = "") {
+export function filterCatalog(category: CategoryId | null, query = "", source: CatalogItem[] = catalogItems) {
   const normalizedQuery = query.trim().toLocaleLowerCase("es");
 
-  return catalogItems.filter((item) => {
+  return source.filter((item) => {
     const matchesCategory = !category || item.category === category;
     const matchesQuery =
       !normalizedQuery ||

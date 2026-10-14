@@ -2,24 +2,27 @@ import { parsePrice, type CartItemInput, type CartLine } from "./cart-item";
 
 export function addCartItem(lines: CartLine[], item: CartItemInput, quantity = 1): CartLine[] {
   const amount = Math.min(99, Math.max(1, Math.floor(quantity)));
-  const existingLine = lines.find((line) => line.id === item.id);
+  const lineId = item.variantId ?? item.id;
+  const existingLine = lines.find((line) => (line.variantId ?? line.id) === lineId);
 
   if (existingLine) {
     return lines.map((line) =>
-      line.id === item.id ? { ...line, quantity: Math.min(99, line.quantity + amount) } : line,
+      line.id === existingLine.id ? { ...line, quantity: Math.min(99, line.quantity + amount) } : line,
     );
   }
 
   return [
     ...lines,
     {
-      id: item.id,
+      id: lineId,
       name: item.name,
       image: item.image,
       reference: item.reference,
       unitPrice: parsePrice(item.price),
       originalUnitPrice: parsePrice(item.oldPrice ?? item.price),
       quantity: amount,
+      variantId: item.variantId,
+      variantName: item.variantName,
     },
   ];
 }
